@@ -1,5 +1,5 @@
 #!/bin/bash
-upload_server="upload-server.servicecomb"
+upload_server="jmeter-collector.servicecomb"
 rm -rf ./dashboard
 
 if [ "$REPORT_UPLOAD_SERVER" != "" ]; then
