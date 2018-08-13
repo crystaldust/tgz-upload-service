@@ -34,7 +34,7 @@ func handleUpload(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	nowStr := time.Now().Format("20060102150405")
+	nowStr := time.Now().Format("20060102-150405")
 	targetFileDir := fmt.Sprintf("./testresults/%s/%s", testname, nowStr)
 	_, err := os.OpenFile(targetFileDir, os.O_WRONLY, os.ModePerm)
 	if err != nil && !os.IsExist(err) {
@@ -45,28 +45,16 @@ func handleUpload(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// targetFilePath := fmt.Sprintf("%s/%s", targetFileDir, "zipcontent")
-	// file, _ := os.Create(targetFilePath)
-	// n, err := io.Copy(file, r.Body)
-	// if err != nil {
-	//     fmt.Println("failed to copy file")
-	//     w.WriteHeader(http.StatusInternalServerError)
-	//     w.Write([]byte(err.Error()))
-	//     return
-	// }
-
-	if err := unzipToFile(r.Body, targetFileDir); err != nil {
+	if err := decompressArchiveToFile(r.Body, targetFileDir); err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 		w.Write([]byte(err.Error()))
 		return
 	}
 
 	w.WriteHeader(http.StatusCreated)
-	// returnStr := fmt.Sprintf("%d bytes saved", n)
-	// w.Write([]byte(returnStr))
 }
 
-func unzipToFile(reqBody io.ReadCloser, targetFileDir string) error {
+func decompressArchiveToFile(reqBody io.ReadCloser, targetFileDir string) error {
 	gzipReader, err := gzip.NewReader(reqBody)
 	if err != nil {
 		return err
