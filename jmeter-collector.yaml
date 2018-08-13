@@ -1,0 +1,38 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: jmeter-collector
+  namespace: servicecomb
+  labels:
+    app: jmeter-collector
+spec:
+  ports:
+  - port: 80
+    targetPort: 8883
+    name: http-jmeter-collector
+  # externalIPs: ["$YOUR_NODEPORT_IP"]
+  # type: NodePort
+  selector:
+    app: jmeter-collector
+---
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: jmeter-collector
+  namespace: servicecomb
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: jmeter-collector
+        version: v1
+    spec:
+      containers:
+      - name: jmeter-collector
+        image: servicecomb/jmeter-collector:v1
+        imagePullPolicy: IfNotPresent
+        # ports:
+        # - containerPort: 8882
+---
+
