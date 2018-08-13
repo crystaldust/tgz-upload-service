@@ -23,6 +23,7 @@ func main() {
 }
 
 func handleUpload(w http.ResponseWriter, r *http.Request) {
+	fmt.Println(time.Now(), r.RequestURI)
 	if r.Method != http.MethodPost {
 		w.WriteHeader(http.StatusMethodNotAllowed)
 		return
